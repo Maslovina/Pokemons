@@ -1,0 +1,8 @@
+.wrapper {
+    margin-bottom: 54px;
+}
+.api {
+    padding: 7px;
+    border: 1px solid var(--white-text, #FFF);
+    background-color: #000;
+}

@@ -1,0 +1,20 @@
+.default {
+    padding: 20px;
+    border-radius: 44px;
+    background: #1986EC;
+    gap: 10px;
+    border: none;
+    /* text */
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 100%;
+}
+
+.api {
+    padding: 7px;
+    border: 1px solid #FFF;
+}
+
+.default:hover {
+    background: #1164b1;
+}
