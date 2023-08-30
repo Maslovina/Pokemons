@@ -14,7 +14,7 @@ function App() {
   const [data, setData] = useState([]);
   const [pokemonCard, setPokemonCard] = useState({})
 
- 
+ // получение данных с api
   useEffect(() => {
     const zapr = fetch("https://pokeapi.co/api/v2/pokemon?limit=10", {
       Method: "GET",
@@ -23,7 +23,7 @@ function App() {
       .then((data) => setData(data.results))
 
   }, [])
-
+// получаем первого покемона
   useEffect(() => {
     const first = data[0]
     if (data.length > 0) {
@@ -40,6 +40,7 @@ function App() {
     }
   },[data])
 
+  // отрисовка карточки по нажатию на кнопку
   const toggleBtn =  (e) => {
     const newPokemon = data.find((el) => el.name === e.target.value)
     fetch(newPokemon.url)
