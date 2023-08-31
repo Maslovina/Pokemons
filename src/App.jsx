@@ -1,61 +1,53 @@
-import Main from './Layout/Main/Main';
-import Button from './Ui/Button/Button';
-import './styles/main.css'
-import Container from './Layout/Container/Container';
-import Zaglushka from './Components/Zaglushka/Zaglushka';
-import ChipsContainer from './Components/ChipsContainer/ChipsContainer';
-import ButtonContainer from './Components/ButtonContainer/ButtonContainer';
-import Card from './Components/Card/Card';
-import { useState, useEffect } from 'react';
-
-
+import { useState, useEffect } from "react";
+import "./styles/main.css";
+import Main from "./Layout/Main/Main";
+import Button from "./Ui/Button/Button";
+import Container from "./Layout/Container/Container";
+import Zaglushka from "./Components/Zaglushka/Zaglushka";
+import ChipsContainer from "./Components/ChipsContainer/ChipsContainer";
+import ButtonContainer from "./Components/ButtonContainer/ButtonContainer";
+import Card from "./Components/Card/Card";
 
 function App() {
-  const [data, setData] = useState([]);
-  const [pokemonCard, setPokemonCard] = useState({})
+  const [data, setData] = useState([]); // данные о покемонах
+  const [pokemonCard, setPokemonCard] = useState({}); // состояние карточки
+  const [currentCard, setCurrentCard] = useState({}); // состояние выбранное
 
- // получение данных с api
+  // получение данных с api
   useEffect(() => {
-    const zapr = fetch("https://pokeapi.co/api/v2/pokemon?limit=10", {
-      Method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => setData(data.results))
+      fetch("https://pokeapi.co/api/v2/pokemon?limit=10", {
+        Method: "GET",
+      })
+        .then((res) => res.json())
+        .then((data) => setData(data.results))
+        .catch((err) => console.log(err));
+    
+  }, []);
 
-  }, [])
-// получаем первого покемона
+  // отрисовка последующих
   useEffect(() => {
-    const first = data[0]
     if (data.length > 0) {
-      fetch(first.url)
-      .then((res) => res.json())
-      .then((card) =>
-        setPokemonCard({
-          name: card.name.charAt(0).toUpperCase() + card.name.slice(1),
-          id: card.id,
-          series: card.moves.length + 1,
-          height: card.height,
-          pic: card.sprites.front_shiny,
-        }))
+      fetch(pokemonCard?.url ?? data[0].url)
+        .then((res) => res.json())
+        .then((card) =>
+          setCurrentCard({
+            name: card.name.charAt(0).toUpperCase() + card.name.slice(1),
+            id: card.id,
+            series: card.moves.length + 1,
+            height: card.height,
+            pic: card.sprites.front_shiny,
+          })
+        )
+        .catch((err) => console.log(err));
     }
-  },[data])
-
-  // отрисовка карточки по нажатию на кнопку
-  const toggleBtn =  (e) => {
-    const newPokemon = data.find((el) => el.name === e.target.value)
-    fetch(newPokemon.url)
-      .then((res) => res.json())
-      .then((card) =>
-        setPokemonCard({
-          name: card.name.charAt(0).toUpperCase() + card.name.slice(1),
-          id: card.id,
-          series: card.moves.length + 1,
-          height: card.height,
-          pic: card.sprites.front_shiny,
-        })
-      );
-  }
+  }, [pokemonCard, data]);
   
+  // отрисовка карточки по нажатию на кнопку
+  const toggleBtn = (e) => {
+    const newPokemon = data.find((el) => el.name === e.target.value);
+    setPokemonCard(newPokemon)
+  };
+
   return (
     <Main>
       <Container>
@@ -67,11 +59,11 @@ function App() {
             ))}
           </ButtonContainer>
           <Card
-            name={pokemonCard.name}
-            id={pokemonCard.id}
-            series={pokemonCard.series}
-            height={pokemonCard.height}
-            pic={pokemonCard.pic}
+            name={currentCard.name}
+            id={currentCard.id}
+            series={currentCard.series}
+            height={currentCard.height}
+            pic={currentCard.pic}
           />
         </ChipsContainer>
       </Container>
